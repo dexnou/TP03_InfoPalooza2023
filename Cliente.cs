@@ -18,8 +18,8 @@ class Cliente
         TotalAbonado = totalAbonado;
     }
 
-    // public bool CambiarEntrada(int tipoEntrada, double totalAbonado){
-        
-    // }
-
+    public void CambiarEntrada(int tipoEntradaNueva, double totalAbonado){ //tendria que ser bool... 
+        TipoEntrada = tipoEntradaNueva;
+        TotalAbonado = totalAbonado;
+    }
 }

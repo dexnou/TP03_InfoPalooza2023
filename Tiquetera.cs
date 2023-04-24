@@ -1,14 +1,9 @@
 class Tiquetera{
 
-    static int UltimoID {get;set;}
+    private static int UltimoID = 0; //en realidad en la consigna dice que debe empezar en 1...
 
-
-    // public IDh(int id){
-    //     UltimoID = id;
-    // }
-    static int DevolverUltimoID(){
-        
-        
+    public static int DevolverUltimoID(){
+        UltimoID = UltimoID+1;
         return UltimoID;
     }
 }
