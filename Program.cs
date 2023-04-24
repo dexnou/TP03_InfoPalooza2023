@@ -1,7 +1,7 @@
 ﻿class Program
 {   
-    const int TIPO_ENTRADAS = 4;
-    
+    const int TOTAL_ENTRADAS = 4;
+    int[] opcion = {15000, 30000, 10000, 40000};  
     static void Main(string[] args)
     {
         Cliente cliente = new Cliente("", "","", 0,0);
@@ -13,11 +13,7 @@
         double totalAbonado = 0;
         double totalAbonadoNuevo = 0;
         int ultimoID = 0;
-        int[] opcion = new int[4];    
-        opcion[0] = 15000;
-        opcion[1] = 30000;
-        opcion[2] = 10000;
-        opcion[3] = 40000;
+        int[] opcion = {15000, 30000, 10000, 40000};    
         do{
             numMenu = IngresarInt("1. Nueva Inscripción | 2. Obtener estadísticas del evento | 3. Buscar Cliente | 4. Cambiar entrada de un cliente | 5. Salir");
             switch(numMenu)
@@ -34,16 +30,25 @@
                 if(ultimoID == 0){  
                     Console.WriteLine("Aún no se ingresaron personas en la lista.");
                 }else{
-                    double TotalConseguido = 0; 
+                    double totalConseguido = 0;
+                    int totalEntradasVendidas = 0; 
+                    int[] entradas = new int[TOTAL_ENTRADAS];
                     Console.WriteLine("Estadisticas del Evento: ");
                     Console.WriteLine($"Cantidad de Clientes inscriptos: {ultimoID}");
-                    // Console.WriteLine($"Porcentaje de entradas diferenciadas por tipo respecto al total:{}");
                     foreach(int clave in DiccionarioClientes.Keys){
-                        TotalConseguido += DiccionarioClientes[clave].TotalAbonado;
-
+                        totalConseguido += DiccionarioClientes[clave].TotalAbonado;
+                        entradas[DiccionarioClientes[clave].TipoEntrada-1]++;
+                        totalEntradasVendidas++;
                     }
-                    // Console.WriteLine($"Recaudacion de cada día: {}");
-                    Console.WriteLine($"Recaudacion total: {TotalConseguido}");
+                    Console.WriteLine($"Porcentaje de entradas diferenciadas por tipo respecto al total: ");
+                    for(int i = 0; i < entradas.Length; i++){
+                        Console.WriteLine($"Tipo de entrada {i+1}: {(entradas[i]/totalEntradasVendidas)*100}% del total");
+                    }                    
+                    Console.WriteLine("Recaudacion de cada día:");
+                    for(int i = 0; i<entradas.Length;i++){
+                        Console.WriteLine($"Día {i+1}: ${entradas[i]*opcion[i]} ");
+                    }
+                    Console.WriteLine($"Recaudacion total: {totalConseguido}");
                 }
                 break;
 
@@ -106,14 +111,16 @@
             tipoEntrada = IngresarInt("El tipo ingresado es imposible. Tipo de entrada: ");
         }
     }
-    static void VerificacionTotalAbonado(double totalAbonado, int tipoEntrada, int[] opcion){
+    static double VerificacionTotalAbonado(double totalAbonado, int tipoEntrada, int[] opcion){
+        double vuelto = 0;
         while(totalAbonado < opcion[tipoEntrada-1]){
             totalAbonado = IngresarDouble("El total abonado es menor al precio de la entrada. Total a abonar: ");
         }
         if(totalAbonado > opcion[tipoEntrada-1]){
-            double vuelto = totalAbonado - opcion[tipoEntrada-1];
+            vuelto = totalAbonado - opcion[tipoEntrada-1];
             Console.WriteLine("Vuelto: " + vuelto);
         }
+        return totalAbonado -= vuelto;
     }
     static Cliente ObtenerCliente(Cliente clienteInfo, int[] opcion, int tipoEntrada, double totalAbonado){
         string dni = IngresarString("Ingrese el DNI del cliente: ");
@@ -122,7 +129,7 @@
         tipoEntrada = IngresarInt("Tipo de entrada: ");
         VerificacionTipoEntrada(tipoEntrada);
         totalAbonado = IngresarDouble("Total a abonar: ");
-        VerificacionTotalAbonado(totalAbonado, tipoEntrada, opcion);
+        totalAbonado = VerificacionTotalAbonado(totalAbonado, tipoEntrada, opcion);
         clienteInfo = new Cliente(dni, apellido, nombre, tipoEntrada, totalAbonado);
         return clienteInfo;
     }
