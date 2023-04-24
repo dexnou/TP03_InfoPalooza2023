@@ -1,7 +1,7 @@
 ﻿class Program
 {   
     const int TOTAL_ENTRADAS = 4;
-    int[] opcion = {15000, 30000, 10000, 40000};  
+    static int[] opcion = {15000, 30000, 10000, 40000};  
     static void Main(string[] args)
     {
         Cliente cliente = new Cliente("", "","", 0,0);
@@ -13,7 +13,7 @@
         double totalAbonado = 0;
         double totalAbonadoNuevo = 0;
         int ultimoID = 0;
-        int[] opcion = {15000, 30000, 10000, 40000};    
+            
         do{
             numMenu = IngresarInt("1. Nueva Inscripción | 2. Obtener estadísticas del evento | 3. Buscar Cliente | 4. Cambiar entrada de un cliente | 5. Salir");
             switch(numMenu)
@@ -27,29 +27,7 @@
                 break;
 
                 case 2: 
-                if(ultimoID == 0){  
-                    Console.WriteLine("Aún no se ingresaron personas en la lista.");
-                }else{
-                    double totalConseguido = 0;
-                    int totalEntradasVendidas = 0; 
-                    int[] entradas = new int[TOTAL_ENTRADAS];
-                    Console.WriteLine("Estadisticas del Evento: ");
-                    Console.WriteLine($"Cantidad de Clientes inscriptos: {ultimoID}");
-                    foreach(int clave in DiccionarioClientes.Keys){
-                        totalConseguido += DiccionarioClientes[clave].TotalAbonado;
-                        entradas[DiccionarioClientes[clave].TipoEntrada-1]++;
-                        totalEntradasVendidas++;
-                    }
-                    Console.WriteLine($"Porcentaje de entradas diferenciadas por tipo respecto al total: ");
-                    for(int i = 0; i < entradas.Length; i++){
-                        Console.WriteLine($"Tipo de entrada {i+1}: {(entradas[i]/totalEntradasVendidas)*100}% del total");
-                    }                    
-                    Console.WriteLine("Recaudacion de cada día:");
-                    for(int i = 0; i<entradas.Length;i++){
-                        Console.WriteLine($"Día {i+1}: ${entradas[i]*opcion[i]} ");
-                    }
-                    Console.WriteLine($"Recaudacion total: {totalConseguido}");
-                }
+                ObtenerEstadisticas(ultimoID,DiccionarioClientes);
                 break;
 
                 case 3: 
@@ -122,6 +100,32 @@
         }
         return totalAbonado -= vuelto;
     }
+    static void ObtenerEstadisticas(int ultimoID, SortedDictionary<int, Cliente> DiccionarioClientes ){
+        if(ultimoID == 0){  
+            Console.WriteLine("Aún no se ingresaron personas en la lista.");
+        }else{
+            double totalConseguido = 0;
+            int totalEntradasVendidas = 0; 
+            int[] entradas = new int[TOTAL_ENTRADAS];
+            Console.WriteLine("Estadisticas del Evento: ");
+            Console.WriteLine($"Cantidad de Clientes inscriptos: {ultimoID}");
+            foreach(int clave in DiccionarioClientes.Keys){
+                totalConseguido += DiccionarioClientes[clave].TotalAbonado;
+                entradas[DiccionarioClientes[clave].TipoEntrada-1]++;
+                totalEntradasVendidas++;
+            }
+            Console.WriteLine($"Porcentaje de entradas diferenciadas por tipo respecto al total: ");
+            for(int i = 0; i < entradas.Length; i++){
+                Console.WriteLine($"Tipo de entrada {i+1}: {(entradas[i]*100)/totalEntradasVendidas}% del total");
+            }                    
+                Console.WriteLine("Recaudacion de cada día:");
+                for(int i = 0; i<entradas.Length;i++){
+                    Console.WriteLine($"Día {i+1}: ${entradas[i]*opcion[i]} ");
+                }
+            Console.WriteLine($"Recaudacion total: {totalConseguido}");
+        }
+    }
+
     static Cliente ObtenerCliente(Cliente clienteInfo, int[] opcion, int tipoEntrada, double totalAbonado){
         string dni = IngresarString("Ingrese el DNI del cliente: ");
         string apellido = IngresarString("Apellido del cliente: ");
